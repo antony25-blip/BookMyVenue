@@ -14,7 +14,7 @@ const {
 
 const { protect } = require("../middleware/auth.middleware");
 const { authorizeRoles } = require("../middleware/role.middleware");
-const { uploadMultiple } = require("../middleware/upload.middleware");
+const { uploadMultiple, uploadVenueFiles } = require("../middleware/upload.middleware");
 
 // Public
 router.get("/", getAllVenues);
@@ -26,8 +26,8 @@ router.post("/:id/reviews", protect, authorizeRoles("user"), addReview);
 
 // Private — venue_owner only
 router.get("/owner/my-venues", protect, authorizeRoles("venue_owner"), getMyVenues);
-router.post("/", protect, authorizeRoles("venue_owner"), uploadMultiple, createVenue);
-router.put("/:id", protect, authorizeRoles("venue_owner"), uploadMultiple, updateVenue);
+router.post("/", protect, authorizeRoles("venue_owner"), uploadVenueFiles, createVenue);
+router.put("/:id", protect, authorizeRoles("venue_owner"), uploadVenueFiles, updateVenue);
 router.delete("/:id", protect, authorizeRoles("venue_owner"), deleteVenue);
 
 module.exports = router;

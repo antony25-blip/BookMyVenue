@@ -1,0 +1,47 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rounded white background card -->
+  <rect width="512" height="512" rx="100" fill="#FFFFFF" />
+  
+  <!-- Tilted Ticket Stub Group -->
+  <g transform="translate(156, 50) scale(1.0)">
+    <g transform="rotate(-15 100 100)">
+      <!-- Red ticket path -->
+      <path d="M 62,20 H 85 A 15,15 0 0,0 115,20 H 138 A 12,12 0 0,1 150,32 V 168 A 12,12 0 0,1 138,180 H 115 A 15,15 0 0,0 85,180 H 62 A 12,12 0 0,1 50,168 V 32 A 12,12 0 0,1 62,20 Z" fill="#D32F2F" />
+      
+      <!-- Building path inside ticket -->
+      <!-- Roof triangle outline -->
+      <path d="M 100,55 L 66,79 L 71,84 L 100,64 L 129,84 L 134,79 Z" fill="#FFF" />
+      
+      <!-- Horizontal Beam -->
+      <rect x="71" y="87" width="58" height="6" rx="1" fill="#FFF" />
+      
+      <!-- Left Pillar -->
+      <rect x="76" y="97" width="8" height="38" rx="1" fill="#FFF" />
+      
+      <!-- Right Pillar -->
+      <rect x="116" y="97" width="8" height="38" rx="1" fill="#FFF" />
+      
+      <!-- Middle Arch -->
+      <path d="M 91,135 V 109 A 9,9 0 0,1 109,109 V 135 H 102 V 109 A 2,2 0 0,0 98,109 V 135 H 91 Z" fill="#FFF" />
+    </g>
+  </g>
+
+  <!-- Typography -->
+  <!-- "Book My" on Line 1 -->
+  <text x="256" y="315" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="52" font-weight="800">
+    <tspan fill="#111111">Book </tspan>
+    <tspan fill="#D32F2F">My</tspan>
+  </text>
+  
+  <!-- "Venue" on Line 2 -->
+  <text x="256" y="375" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="52" font-weight="800" fill="#111111">
+    Venue
+  </text>
+  
+  <!-- Slogan and dashes on Line 3 -->
+  <line x1="85" y1="432" x2="115" y2="432" stroke="#D32F2F" stroke-width="3" stroke-linecap="round" />
+  <text x="256" y="437" text-anchor="middle" font-family="'Outfit', system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#222222" letter-spacing="1.5">
+    BOOK YOUR PERFECT VENUE
+  </text>
+  <line x1="397" y1="432" x2="427" y2="432" stroke="#D32F2F" stroke-width="3" stroke-linecap="round" />
+</svg>

@@ -19,13 +19,25 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
 
+    // For daily bookings, endDate is the last day (inclusive)
+    endDate: {
+      type: Date,
+      default: null,
+    },
+
+    bookingType: {
+      type: String,
+      enum: ["hourly", "daily"],
+      default: "hourly",
+    },
+
     startTime: {
       type: String,
-      required: true,
+      default: null, // null for daily bookings
     },
     endTime: {
       type: String,
-      required: true,
+      default: null, // null for daily bookings
     },
 
     guests: {

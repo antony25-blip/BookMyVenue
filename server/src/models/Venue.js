@@ -42,12 +42,37 @@ const venueSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  pricePerDay: {
+    type: Number,
+    default: 0, // 0 means not available for daily booking
+  },
+  openTime: {
+    type: String,
+    default: "08:00", // e.g. "08:00"
+  },
+  closeTime: {
+    type: String,
+    default: "22:00", // e.g. "22:00"
+  },
+  gapHours: {
+    type: Number,
+    default: 4, // Cleanup buffer between bookings (hours)
+  },
+  setupHours: {
+    type: Number,
+    default: 2, // Stage setup buffer before bookings (hours)
+  },
+  
   amenities: [String],
   images: [String],
   isApproved: {
       type: Boolean,
       default: false,
     },
+  license: {
+    type: String,
+    default: "",
+  },
 },
 { timestamps: true }
 );

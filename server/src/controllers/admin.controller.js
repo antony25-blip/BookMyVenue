@@ -70,7 +70,7 @@ exports.deleteUser = async (req, res) => {
 exports.getAllVenues = async (req, res) => {
   try {
     const venues = await Venue.find()
-      .populate("owner", "name email phone")
+      .populate("owner", "name email phone address")
       .sort({ createdAt: -1 });
     res.json({ success: true, count: venues.length, venues });
   } catch (error) {

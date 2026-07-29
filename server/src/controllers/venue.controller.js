@@ -27,7 +27,7 @@ exports.getAllVenues = async (req, res) => {
     }
 
     const venues = await Venue.find(filter)
-      .populate("owner", "name email phone")
+      .populate("owner", "name email phone address")
       .sort({ createdAt: -1 });
 
     res.json({ success: true, count: venues.length, venues });
@@ -41,7 +41,7 @@ exports.getAllVenues = async (req, res) => {
 // @access  Public
 exports.getVenueById = async (req, res) => {
   try {
-    const venue = await Venue.findById(req.params.id).populate("owner", "name email phone");
+    const venue = await Venue.findById(req.params.id).populate("owner", "name email phone address");
     if (!venue) return res.status(404).json({ success: false, message: "Venue not found" });
 
     // Fetch reviews for this venue
@@ -66,14 +66,53 @@ exports.getVenueById = async (req, res) => {
 // @access  Private (venue_owner)
 exports.createVenue = async (req, res) => {
   try {
-    const { name, location, address, description, capacity, category, pricePerHour, amenities, images } = req.body;
+    const {
+      name, location, address, description,
+      capacity, category, pricePerHour, pricePerDay,
+      amenities, images,
+      openTime, closeTime, gapHours, setupHours
+    } = req.body;
+
+    let imageUrls = [];
+    if (typeof images === "string") {
+      imageUrls = images.split(",").map(i => i.trim()).filter(Boolean);
+    } else if (Array.isArray(images)) {
+      imageUrls = images;
+    }
+    if (req.files && req.files.images && req.files.images.length > 0) {
+      const uploaded = req.files.images.map(file => `/uploads/${file.filename}`);
+      imageUrls = [...imageUrls, ...uploaded];
+    }
+    if (imageUrls.length === 0) {
+      imageUrls.push("https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=800");
+    }
+
+    let licenseUrl = "";
+    if (req.files && req.files.license && req.files.license.length > 0) {
+      licenseUrl = `/uploads/${req.files.license[0].filename}`;
+    }
+
+    let amenitiesArray = [];
+    if (typeof amenities === "string") {
+      amenitiesArray = amenities.split(",").map(a => a.trim()).filter(Boolean);
+    } else if (Array.isArray(amenities)) {
+      amenitiesArray = amenities;
+    }
 
     const venue = await Venue.create({
       owner: req.user.id,
       name, location, address, description,
-      capacity, category, pricePerHour,
-      amenities: amenities || [],
-      images: images || [],
+      capacity: Number(capacity),
+      category,
+      pricePerHour: Number(pricePerHour),
+      pricePerDay: pricePerDay ? Number(pricePerDay) : 0,
+      openTime: openTime || "08:00",
+      closeTime: closeTime || "22:00",
+      gapHours: gapHours ? Number(gapHours) : 4,
+      setupHours: setupHours ? Number(setupHours) : 2,
+      amenities: amenitiesArray,
+      images: imageUrls,
+      license: licenseUrl,
     });
 
     res.status(201).json({ success: true, message: "Venue created, pending admin approval", venue });
@@ -94,7 +133,28 @@ exports.updateVenue = async (req, res) => {
       return res.status(403).json({ success: false, message: "Not authorized to update this venue" });
     }
 
-    const updated = await Venue.findByIdAndUpdate(req.params.id, req.body, {
+    const updateData = { ...req.body };
+    if (updateData.capacity) updateData.capacity = Number(updateData.capacity);
+    if (updateData.pricePerHour) updateData.pricePerHour = Number(updateData.pricePerHour);
+    if (updateData.pricePerDay !== undefined) updateData.pricePerDay = Number(updateData.pricePerDay);
+    if (updateData.gapHours !== undefined) updateData.gapHours = Number(updateData.gapHours);
+    if (updateData.setupHours !== undefined) updateData.setupHours = Number(updateData.setupHours);
+
+    if (typeof updateData.amenities === "string") {
+      updateData.amenities = updateData.amenities.split(",").map(a => a.trim()).filter(Boolean);
+    }
+    if (typeof updateData.images === "string") {
+      updateData.images = updateData.images.split(",").map(i => i.trim()).filter(Boolean);
+    }
+    if (req.files && req.files.images && req.files.images.length > 0) {
+      const uploaded = req.files.images.map(file => `/uploads/${file.filename}`);
+      updateData.images = [...(updateData.images || venue.images), ...uploaded];
+    }
+    if (req.files && req.files.license && req.files.license.length > 0) {
+      updateData.license = `/uploads/${req.files.license[0].filename}`;
+    }
+
+    const updated = await Venue.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     });
